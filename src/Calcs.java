@@ -1,102 +1,71 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Calcs {
-    public static double calcularExpressao(String expressao) {
+
+    public static String calculateExpression (String expression) {
         try {
+            List<Double> numbers = new ArrayList<>();
+            List<Character> operators = new ArrayList<>();
 
-            // Verifica se a expressão é vazia
-            if (expressao.isEmpty()) {
-                return Double.NaN;
+            // Faz um boolean que verifica se tem um -+ depois de um /* se sim, adiciona no numero
+
+            StringBuilder actualNumber = new StringBuilder();
+            for (char c : expression.toCharArray()) {
+                if (Character.isDigit(c) || c == '.') {
+                    actualNumber.append(c);
+                } else {
+                    numbers.add(Double.parseDouble(actualNumber.toString()));
+                    actualNumber = new StringBuilder();
+                    operators.add(c);
+                }
             }
+            numbers.add(Double.parseDouble(actualNumber.toString()));
 
-            // Remove espaços em branco da expressão
-            expressao = expressao.replace(" ", "");
+            if (numbers.size() == operators.size() + 1) {
+                double resultado = 0;
 
-            // Verifica se a expressão contém apenas caracteres válidos
-            if (!expressao.matches("^[()\\d+\\-*/.]+$")) {
-                return Double.NaN;
+                for (int i = 0; i < operators.size(); ) {
+                    char operator = operators.get(i);
+                    if (operator == '*') {
+                        resultado = numbers.get(i) * numbers.get(i + 1);
+                        operators.remove(i);
+                        numbers.remove(i);
+                        numbers.remove(i);
+                        numbers.add(i, resultado);
+                    } else if (operator == '/') {
+                        resultado = numbers.get(i) / numbers.get(i + 1);
+                        operators.remove(i);
+                        numbers.remove(i);
+                        numbers.remove(i);
+                        numbers.add(i, resultado);
+                    } else break;
+                }
+
+                for (int i = 0; i < operators.size(); ) {
+                    char operator = operators.get(i);
+                    if (operator == '+') {
+                        resultado = numbers.get(i) + numbers.get(i + 1);
+                        operators.remove(i);
+                        numbers.remove(i);
+                        numbers.remove(i);
+                        numbers.add(i, resultado);
+                    } else if (operator == '-') {
+                        resultado = numbers.get(i) - numbers.get(i + 1);
+                        operators.remove(i);
+                        numbers.remove(i);
+                        numbers.remove(i);
+                        numbers.add(i, resultado);
+                    }
+                }
+
+                return String.valueOf(resultado);
+            } else {
+                return "NaN";
             }
-
-            // Calcula e retorna o valor do cálculo
-            return eval(expressao);
         } catch (Exception e) {
-            return Double.NaN;
+            return "NaN";
         }
     }
-
-    private static double eval(final String expressao) {
-        return new Object() {
-            int pos = -1, ch;
-
-            void nextChar() {
-                ch = (++pos < expressao.length()) ? expressao.charAt(pos) : -1;
-            }
-
-            boolean eat(int charToEat) {
-                if (ch == charToEat) {
-                    nextChar();
-                    return true;
-                }
-                return false;
-            }
-
-            double parse() {
-                nextChar();
-                double x = parseExpression();
-                if (pos < expressao.length()) {
-                    throw new RuntimeException("Caractere inesperado: " + (char) ch);
-                }
-                return x;
-            }
-
-            double parseExpression() {
-                double x = parseTerm();
-                for (;;) {
-                    if (eat('+')) {
-                        x += parseTerm();
-                    } else if (eat('-')) {
-                        x -= parseTerm();
-                    } else {
-                        return x;
-                    }
-                }
-            }
-
-            double parseTerm() {
-                double x = parseFactor();
-                for (;;) {
-                    if (eat('*')) {
-                        x *= parseFactor();
-                    } else if (eat('/')) {
-                        x /= parseFactor();
-                    } else {
-                        return x;
-                    }
-                }
-            }
-
-            double parseFactor() {
-                if (eat('+')) {
-                    return parseFactor();
-                }
-                if (eat('-')) {
-                    return -parseFactor();
-                }
-
-                double x;
-                int startPos = this.pos;
-                if (eat('(')) {
-                    x = parseExpression();
-                    eat(')');
-                } else if ((ch >= '0' && ch <= '9') || ch == '.') {
-                    while ((ch >= '0' && ch <= '9') || ch == '.') {
-                        nextChar();
-                    }
-                    x = Double.parseDouble(expressao.substring(startPos, this.pos));
-                } else {
-                    throw new RuntimeException("Número inválido");
-                }
-
-                return x;
-            }
-        }.parse();
-    }
 }
+
