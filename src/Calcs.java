@@ -35,16 +35,10 @@ public class Calcs {
                     char operator = operators.get(i);
                     if (operator == '*') {
                         resultado = numbers.get(i) * numbers.get(i + 1);
-                        operators.remove(i);
-                        numbers.remove(i);
-                        numbers.remove(i);
-                        numbers.add(i, resultado);
+                        removeElementsAndAddResult(operators, numbers, i,  resultado);
                     } else if (operator == '/') {
                         resultado = numbers.get(i) / numbers.get(i + 1);
-                        operators.remove(i);
-                        numbers.remove(i);
-                        numbers.remove(i);
-                        numbers.add(i, resultado);
+                        removeElementsAndAddResult(operators, numbers, i,  resultado);
                     } else break;
                 }
 
@@ -52,16 +46,10 @@ public class Calcs {
                     char operator = operators.get(i);
                     if (operator == '+') {
                         resultado = numbers.get(i) + numbers.get(i + 1);
-                        operators.remove(i);
-                        numbers.remove(i);
-                        numbers.remove(i);
-                        numbers.add(i, resultado);
+                        removeElementsAndAddResult(operators, numbers, i,  resultado);
                     } else if (operator == '-') {
                         resultado = numbers.get(i) - numbers.get(i + 1);
-                        operators.remove(i);
-                        numbers.remove(i);
-                        numbers.remove(i);
-                        numbers.add(i, resultado);
+                        removeElementsAndAddResult(operators, numbers, i,  resultado);
                     }
                 }
 
@@ -72,6 +60,13 @@ public class Calcs {
         } catch (Exception e) {
             return "NaN";
         }
+    }
+
+    private static void removeElementsAndAddResult(List<Character> operators, List<Double> numbers, int index, double result) {
+        operators.remove(index);
+        numbers.remove(index);
+        numbers.remove(index);
+        numbers.add(index, result);
     }
 }
 
