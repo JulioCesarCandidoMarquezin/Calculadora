@@ -8,17 +8,23 @@ public class Calcs {
             List<Double> numbers = new ArrayList<>();
             List<Character> operators = new ArrayList<>();
 
-            // Faz um boolean que verifica se tem um -+ depois de um /* se sim, adiciona no numero
-
             StringBuilder actualNumber = new StringBuilder();
-            for (char c : expression.toCharArray()) {
-                if (Character.isDigit(c) || c == '.') {
-                    actualNumber.append(c);
+            boolean isFirstSimbolPlusOrMinus = true;
+            boolean isSymbolFollowedOtherSymbol;
+            char lastCharacter = '0';
+
+            for (char character : expression.toCharArray()) {
+                isSymbolFollowedOtherSymbol = ((lastCharacter == '*' || lastCharacter == '/') && (character == '+' || character == '-'));
+                isFirstSimbolPlusOrMinus = (isFirstSimbolPlusOrMinus && (character == '+' || character == '-'));
+                if (isSymbolFollowedOtherSymbol || (isFirstSimbolPlusOrMinus) || Character.isDigit(character) || character == '.') {
+                    actualNumber.append(character);
                 } else {
                     numbers.add(Double.parseDouble(actualNumber.toString()));
                     actualNumber = new StringBuilder();
-                    operators.add(c);
+                    operators.add(character);
                 }
+                isFirstSimbolPlusOrMinus = false;
+                lastCharacter = character;
             }
             numbers.add(Double.parseDouble(actualNumber.toString()));
 
