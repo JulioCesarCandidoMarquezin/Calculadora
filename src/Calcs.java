@@ -31,7 +31,7 @@ public class Calcs {
             if (numbers.size() == operators.size() + 1) {
                 double resultado = 0;
 
-                for (int i = 0; i < operators.size(); ) {
+                for (int i = 0; i < operators.size(); i++) {
                     char operator = operators.get(i);
                     if (operator == '*') {
                         resultado = numbers.get(i) * numbers.get(i + 1);
@@ -39,10 +39,10 @@ public class Calcs {
                     } else if (operator == '/') {
                         resultado = numbers.get(i) / numbers.get(i + 1);
                         removeElementsAndAddResult(operators, numbers, i,  resultado);
-                    } else break;
+                    }
                 }
 
-                for (int i = 0; i < operators.size(); ) {
+                for (int i = 0; i < operators.size();) {
                     char operator = operators.get(i);
                     if (operator == '+') {
                         resultado = numbers.get(i) + numbers.get(i + 1);
